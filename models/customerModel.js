@@ -10,8 +10,8 @@ const customerSchema = new mongoose.Schema({
     }],
 
     debt: { type: Number},
-    
-    RewardPoints: { type: Number},
+
+    RewardPoints: { type: Number,default:0},
     
 }, { timestamps: true });
 

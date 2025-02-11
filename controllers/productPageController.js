@@ -53,7 +53,7 @@ exports.addProduct = async (req, res) => {
         }
 
         
-        updatedFields.totalInvestment = newStock * newCostPrice;
+        updatedFields.totalInvestment = newStock * newCP;
             
     
             const updated= await productModel.findByIdAndUpdate(req.params.id, updatedFields, { new: true });
@@ -70,8 +70,8 @@ exports.addProduct = async (req, res) => {
 
 
     exports.deleteProduct = async (req, res) => {
-       
-            const product = await productModel.findByIdAndDelete(req.params.id);
+       try
+           { const product = await productModel.findByIdAndDelete(req.params.id);
             if (!product) return res.status(404).json({ success: false, message: "Product not found" });
 
             await shopkeeperModel.findByIdAndUpdate(req.user._id, {
@@ -79,7 +79,10 @@ exports.addProduct = async (req, res) => {
             });
 
 
-            res.json({ success: true, message: "Product deleted successfully" });
+            res.json({ success: true, message: "Product deleted successfully" });}
+            catch(e){
+                res.status(500).json({ success: false, error: error.message });
+            }
         };
     
 
@@ -105,7 +108,8 @@ exports.addProduct = async (req, res) => {
                         product.name.toLowerCase().includes(search.toLowerCase())
                     );
                 }
-        
+                 
+                
                 res.json({ success: true, products });
             };
             

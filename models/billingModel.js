@@ -14,7 +14,7 @@ const billSchema = new mongoose.Schema({
     }],
     amount: { type: Number },
     discount: { type: Number },
-    paymentType: { type: String }
+    paymentMode:{type: String}
 }, { timestamps: true });
 
 module.exports =mongoose.models.Bill  || mongoose.model("Bill", billSchema);

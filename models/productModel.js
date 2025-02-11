@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-    // shopkeeperId: { type: mongoose.Schema.Types.ObjectId, ref: "Shopkeeper" },
+    shopkeeperId: { type: mongoose.Schema.Types.ObjectId, ref: "Shopkeeper" },
     name: { type: String},
     brand: { type: String },
     category: { type: String },

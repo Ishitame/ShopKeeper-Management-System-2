@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const shopkeeperModel = require("../models/shopkeeperModel");
-
+const billingModel = require("../models/billingModel");
 
 exports.signup = async (req, res) => {
   
@@ -55,11 +55,51 @@ exports.signup = async (req, res) => {
       const user = await shopkeeperModel.findById(req.user._id).select("-password");
       if (!user) return res.status(404).json({ message: "User not found" });
   
-      res.json(user);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
+
+  exports.frontPage= async(req,res)=>{
+    try {
+    const shopkeeperId = req.user._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+
+    const bills = await billingModel.find({
+      shopkeeperId: shopkeeperId,
+      createdAt: { $gte: today, $lt: tomorrow }
+  }).populate("customerId", "name").select("customerId phone amount paymentMode");
+
+
+  let totalSales=0;
+  let debt=0;
+  let cash=0;
+  
+  bills.forEach(bill => {
+    totalSales += bill.amount;
+    if (bill.paymentMode === "debt") {
+        debt += bill.amount;
+    } else if (bill.paymentMode === "cash") {
+        cash += bill.amount;
+    }
+});
+
+
+  res.json({
+    success: true,
+    totalSales,
+    debt,
+     cash,
+    bills
+});}
+catch (error) {
+  res.status(500).json({ error: error.message });
+}
+};
   
 
   exports.logout = (req, res) => {
