@@ -5,19 +5,19 @@ const productModel = require("../models/productModel");
 exports.createBill = async (req,res) =>{
     try{
         let { name,phone, amount, paymentMode,items } = req.body;
-        const shopkeeperId=req.user._id;
+        let shopkeeperId=req.user._id;
 
-        const user = await customerModel.findOne({ phone });
+        let user = await customerModel.findOne({ phone });
      
         if (!user) {
         
-        const newCustomer = new customerModel({ name, phone});
+        let newCustomer = new customerModel({ name, phone});
         await newCustomer.save();
           user=newCustomer;
         };
          
-       
-          if(user.RewardPoints==50)
+         if(paymentMode=="cash")
+         { if(user.RewardPoints==50)
             
             {amount-=user.RewardPoints;
             let c=0;
@@ -31,6 +31,12 @@ exports.createBill = async (req,res) =>{
                   await customerModel.findByIdAndUpdate(user._id, {RewardPoints:c}
                 );
               }
+        }}
+        else{
+            let x=user.debt+amount
+            await customerModel.findByIdAndUpdate(user._id, { 
+             debt:x
+            });
         }
     
 
@@ -38,7 +44,6 @@ exports.createBill = async (req,res) =>{
             for (const item of items) {
                 let product = await productModel.findById(item.productId);
                 if (product) {
-                    console.log("hey");
                     if (product.stock >= item.quantity) {
                         product.stock -= item.quantity;
                         await product.save();
@@ -47,18 +52,6 @@ exports.createBill = async (req,res) =>{
                     }
                 }
             }
-        
-
-
-
-
-
-
-
-
-
-
-
         let newBill = new billingModel({ shopkeeperId, customerId:user._id, amount, paymentMode ,items});
         await newBill.save();
        
@@ -74,4 +67,7 @@ exports.createBill = async (req,res) =>{
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+
+
 

@@ -17,6 +17,7 @@ productSchema.methods.purchaseStock = async function (quantity, costPricePerUnit
     this.stock += quantity;
     this.totalInvestment += quantity * costPricePerUnit; 
     await this.save();
+
 };
 
 module.exports = mongoose.models.Product || mongoose.model("Product", productSchema);

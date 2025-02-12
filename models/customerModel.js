@@ -9,7 +9,7 @@ const customerSchema = new mongoose.Schema({
             ref: "Bill" }
     }],
 
-    debt: { type: Number},
+    debt: { type: Number,default:0},
 
     RewardPoints: { type: Number,default:0},
     

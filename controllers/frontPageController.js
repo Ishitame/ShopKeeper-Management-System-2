@@ -67,12 +67,13 @@ exports.signup = async (req, res) => {
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
+    
+    const check = await shopkeeperModel.findById(req.user._id);
 
     const bills = await billingModel.find({
       shopkeeperId: shopkeeperId,
       createdAt: { $gte: today, $lt: tomorrow }
-  }).populate("customerId", "name").select("customerId phone amount paymentMode");
+  }).populate("customerId", "name phone").select("customerId  amount paymentMode");
 
 
   let totalSales=0;
@@ -93,8 +94,9 @@ exports.signup = async (req, res) => {
     success: true,
     totalSales,
     debt,
-     cash,
-    bills
+    cash,
+    bills,
+    shopname:check.shopname
 });}
 catch (error) {
   res.status(500).json({ error: error.message });

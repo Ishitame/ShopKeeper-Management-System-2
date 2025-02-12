@@ -7,7 +7,8 @@ const connectDB = require('./config/mongoConfig');
 
 const authRoutes= require('./routes/frontPage');
 const productRoutes = require('./routes/productPage');
-const billRoutes = require('./routes/billingPage')
+const billRoutes = require('./routes/billingPage');
+const customerRoutes= require('./routes/customerPage');
 const morgan = require('morgan');
 
 
@@ -17,6 +18,7 @@ connectDB();
 const app = express();
 
 const cors = require('cors');
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,7 +35,7 @@ app.use(cors({
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/bill",billRoutes)
-
+app.use("/api/customer",customerRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
