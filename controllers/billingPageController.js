@@ -47,6 +47,12 @@ exports.createBill = async (req,res) =>{
                     if (product.stock >= item.quantity) {
                         product.stock -= item.quantity;
                         await product.save();
+                        let discountAmount = (product.sp * product.discount) / 100;
+                       let finalSellingPrice = product.sp - discountAmount;
+
+                         item.price = finalSellingPrice;
+                         
+                       console.log(item.price);
                     } else {
                         return res.status(400).json({ success: false, message: `Insufficient stock for ${product.name}` });
                     }

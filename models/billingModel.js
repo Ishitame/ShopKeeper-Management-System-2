@@ -10,7 +10,9 @@ const billSchema = new mongoose.Schema({
     items: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product"},
         quantity: { type: Number },
-        price: { type: Number}
+        sp: { type: Number},
+        cp: { type: Number},
+        discount: { type: Number , default:0}
     }],
     amount: { type: Number },
     discount: { type: Number },
